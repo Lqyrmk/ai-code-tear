@@ -4,3 +4,4 @@ ai-code-tear
 
 - RMSNorm (PyTorch)
 - LayerNorm (PyTorch)
+- Cross Entropy Loss (NumPy)
