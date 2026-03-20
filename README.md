@@ -6,3 +6,4 @@
 - LayerNorm (PyTorch)
 - Cross Entropy Loss (NumPy)
 - Multi Head Attention (PyTorch)
+- Positional Encoding (PyTorch)
