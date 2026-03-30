@@ -5,5 +5,6 @@
 - RMSNorm (PyTorch)
 - LayerNorm (PyTorch)
 - Cross Entropy Loss (NumPy)
-- Multi Head Attention (PyTorch)
+- Self-Attention / Multi Head Attention (PyTorch)
 - Positional Encoding (PyTorch)
+- Cross-Attention (PyTorch)
