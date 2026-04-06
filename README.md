@@ -8,3 +8,5 @@
 - Self-Attention / Multi Head Attention (PyTorch)
 - Positional Encoding (PyTorch)
 - Cross-Attention (PyTorch)
+- K-Means (NumPy)
+- AUC (NumPy)
