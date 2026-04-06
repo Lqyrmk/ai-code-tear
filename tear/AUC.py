@@ -4,11 +4,10 @@ def auc_bruteforce(labels, preds):
     """
     Bruteforce !!!
     input: List or NumPy Array
-    time complexity: O(mn)
+    time complexity: O(MN)
     """
 
     n = len(labels)
-
     pos = [i for i in range(n) if labels[i] == 1]
     neg = [i for i in range(n) if labels[i] == 0]
 
@@ -27,7 +26,7 @@ def auc_sort(labels, preds):
     """
     sort solution !!!
     input: List
-    time complexity: O(nlogn)
+    time complexity: O(nlogn), n = M + N
     """
     data = list(zip(preds, labels))
     data.sort(key=lambda x: x[0])  # 按照分数 pred 从小到大排序
@@ -41,11 +40,11 @@ def auc_sort(labels, preds):
             neg_cnt += 1
     return (pos_rank_sum - pos_cnt * (pos_cnt + 1) / 2) / (pos_cnt * neg_cnt)
 
-def auc_sort_tie(label, preds):
+def auc_sort_tie(labels, preds):
     """
     sort solution with tie !!!
     input: List
-    time complexity: O(nlogn)
+    time complexity: O(nlogn), n = M + N
     """
     data = list(zip(preds, labels))
     data.sort(key=lambda x: x[0])
