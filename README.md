@@ -9,4 +9,4 @@
 - Positional Encoding (PyTorch)
 - Cross-Attention (PyTorch)
 - K-Means (NumPy)
-- AUC (NumPy)
+- AUC (Bruteforce + Rank & Sort) (NumPy)

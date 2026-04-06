@@ -18,7 +18,7 @@ def auc_bruteforce(labels, preds):
             if preds[i] > preds[j]:
                 cnt += 1
             elif preds[i] == preds[j]:
-                cnt += 0.5
+                cnt += 0.5  # tie
 
     total = len(pos) * len(neg)
     return cnt / total
@@ -26,7 +26,7 @@ def auc_bruteforce(labels, preds):
 def auc_sort(labels, preds):
     """
     sort solution !!!
-    input: List or NumPy Array
+    input: List
     time complexity: O(nlogn)
     """
     data = list(zip(preds, labels))
@@ -41,11 +41,46 @@ def auc_sort(labels, preds):
             neg_cnt += 1
     return (pos_rank_sum - pos_cnt * (pos_cnt + 1) / 2) / (pos_cnt * neg_cnt)
 
+def auc_sort_tie(label, preds):
+    """
+    sort solution with tie !!!
+    input: List
+    time complexity: O(nlogn)
+    """
+    data = list(zip(preds, labels))
+    data.sort(key=lambda x: x[0])
+
+    n = len(preds)
+    pos_rank_sum = M = N = 0
+    i = 0
+    while i < n:  # O(n)
+        j = i
+        pos_cnt = neg_cnt = rank_sum = 0  # 统计区间情况
+        while j < n and data[i][0] == data[j][0]:
+            rank_sum += j + 1  # rank 从 1 开始
+            if data[j][1] == 1:
+                pos_cnt += 1
+            else:
+                neg_cnt += 1
+            j += 1
+        # tie: 对 rank 进行平均，区间是 [i, j)
+        mean_rank = rank_sum / (pos_cnt + neg_cnt)
+        pos_rank_sum += mean_rank * pos_cnt
+        M += pos_cnt
+        N += neg_cnt
+        i = j
+    return (pos_rank_sum - M * (M + 1) / 2) / (M * N)
+
+
 if __name__ == '__main__':
     labels = [1, 0, 1, 0, 1]
     preds = [0.6, 0.7, 0.4, 0.5, 0.5]
 
     auc1 = auc_bruteforce(labels, preds)
     print(f"AUC 1 = {auc1}")
+
     auc2 = auc_sort(labels, preds)
     print(f"AUC 2 = {auc2}")
+
+    auc3 = auc_sort_tie(labels, preds)
+    print(f"AUC 3 = {auc3}")
