@@ -2,6 +2,8 @@
 
 算法岗面试深度学习手撕代码，目前已完成：
 
+## Interview Tear
+
 - RMSNorm (PyTorch)
 - LayerNorm (PyTorch)
 - Cross Entropy Loss (NumPy)
@@ -10,3 +12,7 @@
 - Cross-Attention (PyTorch)
 - K-Means (NumPy)
 - AUC (Bruteforce + Rank & Sort) (NumPy)
+
+## Written Test
+
+- Logistic Regression with IRLS (NumPy)
