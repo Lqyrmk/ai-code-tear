@@ -16,3 +16,4 @@
 ## Written Test
 
 - Logistic Regression with IRLS (NumPy)
+- GRU (NumPy)
