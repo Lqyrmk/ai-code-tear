@@ -17,3 +17,4 @@
 
 - Logistic Regression with IRLS (NumPy)
 - GRU (NumPy)
+- One-Class SVM (NumPy + scikit-learn)
