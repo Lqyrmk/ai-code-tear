@@ -12,6 +12,7 @@
 - Cross-Attention (PyTorch)
 - K-Means (NumPy)
 - AUC (Bruteforce + Rank & Sort) (NumPy)
+- Transformer with mask (PyTorch)
 
 ## Written Test
 

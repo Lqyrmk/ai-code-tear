@@ -30,7 +30,7 @@ class MultiHeadAttention(nn.Module):
         attn_scores = (Q @ K.transpose(-2, -1)) / torch.sqrt(torch.tensor(self.d_model, dtype=torch.float32))
 
         if mask is not None:
-            attn_scores = torch.masked_fill(mask, -1e9)
+            attn_scores = attn_scores.masked_fill(mask, -1e9)
 
         attn_probs = F.softmax(attn_scores, dim=-1)
         out = attn_probs @ V  # [B, H, L, dh]
@@ -189,14 +189,41 @@ class Transformer(nn.Module):
         self.decoder = Decoder(tgt_vocab_size, d_model, n_layers, n_heads, d_ff, max_len, dropout)
         self.fc = nn.Linear(d_model, tgt_vocab_size)
 
-    def forward(self, enc_x, dec_x):
+    def forward(self, enc_x, dec_x, enc_mask=None, dec_mask=None):
 
-        enc_out = self.encoder(enc_x)
-        dec_out = self.decoder(dec_x, enc_out)
+        enc_out = self.encoder(enc_x, enc_mask)
+        dec_out = self.decoder(dec_x, enc_out, enc_mask, dec_mask)
 
         logits = self.fc(dec_out)
 
         return logits
+
+def create_pad_mask(seq, pad_idx):
+    # seq: [batch_size, seq_len] -> token id
+    # output: [batch_size, 1, 1 seq_len] <-> [B, H, Lq, Lkv] for cross-attention
+    return (seq != pad_idx).unsqueeze(1).unsqueeze(1)
+
+def create_causal_mask(seq):
+    # seq: [batch_size, seq_len] -> token id
+    seq_len = seq.size(1)
+    mask = torch.tril(torch.ones(seq_len, seq_len))  # [seq_len, seq_len]
+    # output: [1, 1, seq_len, seq_len] <-> [B, H, L, L] for self-attention
+    return mask.bool().unsqueeze(0).unsqueeze(0)
+
+def create_data(batch_size, max_len, vocab_size, pad_idx):
+
+    # the length of a sequence
+    seq_len = torch.randint(3, max_len, (batch_size,))
+
+    # [1, max_len] < [batch_size, 1]  ===>  [batch_size, max_len]
+    # token_mask = torch.arange(0, max_len).unsqueeze(0) < seq_len.unsqueeze(-1)
+    token_mask = torch.arange(0, max_len)[None, :] < seq_len[:, None]
+    print(f"token_mask: {token_mask.shape}")
+
+    seq = torch.randint(1, vocab_size, (batch_size, max_len))
+    seq = seq.masked_fill(~token_mask, pad_idx)
+
+    return seq
 
 if __name__ == "__main__":
 
@@ -206,11 +233,25 @@ if __name__ == "__main__":
     n_layers = 2
     n_heads = 8
     d_ff = 2048
+    batch_size = 32
+    src_len = 20
+    tgt_len = 15
+    pad_idx = 0
+
+    src = create_data(batch_size, src_len, src_vocab_size, pad_idx)  # [batch_size, src_len]
+    tgt = create_data(batch_size, tgt_len, tgt_vocab_size, pad_idx)  # [batch_size, tgt_len]
+    print(f"src: {src.shape}")
+    print(f"tgt: {tgt.shape}")
+
+    enc_mask = create_pad_mask(src, pad_idx)
+    dec_pad_mask = create_pad_mask(tgt, pad_idx)
+    dec_causal_mask = create_causal_mask(tgt)
+    dec_mask = dec_pad_mask & dec_causal_mask
+    print(f"enc_mask = {enc_mask.shape}")
+    print(f"dec_mask = {dec_mask.shape}")
 
     model = Transformer(src_vocab_size, tgt_vocab_size, d_model, n_layers, n_heads, d_ff)
 
-    src = torch.randint(0, src_vocab_size, (32, 20))   # [batch=32, src_len=20]
-    tgt = torch.randint(0, tgt_vocab_size, (32, 15))   # [batch=32, tgt_len=15]
+    out = model(src, tgt, enc_mask, dec_mask)
 
-    out = model(src, tgt)
     print("output shape:", out.shape)  # torch.Size([32, 15, 1000])
