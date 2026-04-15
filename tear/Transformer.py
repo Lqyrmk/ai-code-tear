@@ -142,7 +142,6 @@ class Encoder(nn.Module):
         self.d_model = d_model
         self.embedding = nn.Embedding(src_vocab_size, d_model)
         self.pe = PositionalEncoding(max_len, d_model, dropout)
-        """TODO"""
         self.layers = nn.ModuleList([EncoderLayer(d_model, n_heads, d_ff, dropout) for _ in range(n_layers)])
 
     def forward(self, x, mask=None):
@@ -160,7 +159,6 @@ class Decoder(nn.Module):
         self.d_model = d_model
         self.embedding = nn.Embedding(tgt_vocab_size, d_model)
         self.pe = PositionalEncoding(max_len, d_model, dropout)
-        """TODO"""
         self.layers = nn.ModuleList([DecoderLayer(d_model, n_heads, d_ff, dropout) for _ in range(n_layers)])
 
     def forward(self, x, enc_out, enc_mask=None, dec_mask=None):
