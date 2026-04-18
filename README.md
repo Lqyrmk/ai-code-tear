@@ -13,9 +13,11 @@
 - K-Means (NumPy)
 - AUC (Bruteforce + Rank & Sort) (NumPy)
 - Transformer with mask (PyTorch)
-- Simple Linear Regression (PyTorch)
-  - Perform automatic differentiation using `backward()`.
-  - Manually implement the gradient descent method to update parameters
+- Linear Regression / LR (PyTorch)
+  - v1: `backward()` and `torch.optim`, simple LR (1D input in scalar form)
+  - v2: `backward()` and no `torch.optim`, simple LR (1D input in scalar form)
+- Multilayer Perceptron / MLP (PyTorch)
+  - v1: `backward()` and no `torch.optim`, two layers (multi-dimensional input in matrix form)
 
 ## Written Test
 

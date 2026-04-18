@@ -11,7 +11,7 @@ def train(x, y, W1, b1, W2, b2, lr=0.01, num_epochs=1000):
 
     for epoch in range(num_epochs):
 
-        # two-layer MLP
+        # two-layer
         H = relu(x @ W1 + b1)
         y_pred = H @ W2 + b2
 
