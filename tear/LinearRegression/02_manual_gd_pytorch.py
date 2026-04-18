@@ -4,7 +4,7 @@ import torch.nn as nn
 def mse_loss(y_true, y_pred):
     return torch.mean((y_true - y_pred) ** 2)
 
-def train(x, y, w, b, criterion, num_epochs=1000):
+def train(x, y, w, b, criterion, lr=0.01, num_epochs=1000):
 
     for epoch in range(num_epochs):
         y_pred = w * x + b
@@ -47,4 +47,4 @@ if __name__ == "__main__":
     print(f"w: {w.item()}")
     print(f"b: {b.item()}")
 
-    train(x, y, w, b, mse_loss, num_epochs)
+    train(x, y, w, b, mse_loss, lr, num_epochs)
