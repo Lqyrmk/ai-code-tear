@@ -13,6 +13,9 @@
 - K-Means (NumPy)
 - AUC (Bruteforce + Rank & Sort) (NumPy)
 - Transformer with mask (PyTorch)
+- Simple Linear Regression (PyTorch)
+  - Perform automatic differentiation using `backward()`.
+  - Manually implement the gradient descent method to update parameters
 
 ## Written Test
 
