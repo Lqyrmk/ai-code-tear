@@ -13,6 +13,7 @@
 - K-Means (NumPy)
 - AUC (Bruteforce + Rank & Sort) (NumPy)
 - Transformer with mask (PyTorch)
+- Multi-gate Mixture-of-Experts / MMoE (PyTorch)
 - Linear Regression / LR (PyTorch)
   - v1: `backward()` and `torch.optim`, simple LR (1D input in scalar form)
   - v2: `backward()` and no `torch.optim`, simple LR (1D input in scalar form)
