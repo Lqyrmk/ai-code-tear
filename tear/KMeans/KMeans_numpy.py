@@ -2,7 +2,7 @@ import numpy as np
 
 class KMeans:
 
-    def __init__(self, k=3, max_iters=100, threshold=1e-4, random_state=None):
+    def __init__(self, k=3, max_iters=100, tol=1e-4, random_state=None):
         self.k = k
         self.max_iters = max_iters
         self.tol = tol  # tolerance
