@@ -10,7 +10,7 @@
 - Self-Attention / Multi Head Attention (PyTorch)
 - Positional Encoding (PyTorch)
 - Cross-Attention (PyTorch)
-- K-Means (NumPy)
+- K-Means (NumPy & PyTorch)
 - AUC (Bruteforce + Rank & Sort) (NumPy)
 - Transformer with mask (PyTorch)
 - Multi-gate Mixture-of-Experts / MMoE (PyTorch)
