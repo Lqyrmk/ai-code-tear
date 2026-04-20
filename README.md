@@ -25,3 +25,7 @@
 - Logistic Regression with IRLS (NumPy)
 - GRU (NumPy)
 - One-Class SVM (NumPy + scikit-learn)
+
+## Other (personal interest)
+
+- Residual Quantization KMeans / RQ-KMeans (PyTorch)
