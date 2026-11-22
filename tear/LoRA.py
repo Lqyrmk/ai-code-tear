@@ -86,15 +86,22 @@ def apply_lora_to_model(model: nn.Module,
                         alpha: float = 1.0,
                         dropout: float = 0.1):
     """
-    将模型中的 Linear 层替换为 LoRALayer
+    冻结 backbone
+    并将模型中的 Linear 层替换为 LoRALayer
     """
 
-    for name, module in model.named_children():
-        if name in target_modules and isinstance(module, nn.Linear):
-            new_layer = LoRALayer(module, rank, alpha, dropout)
-            setattr(model, name, new_layer)
-        else:
-            apply_lora_to_model(module, target_modules, rank, alpha, dropout)
+    for p in model.parameters():
+        p.requires_grad = False
+
+    def _replace(module):
+        for name, m in module.named_children():
+            if name in target_modules and isinstance(m, nn.Linear):
+                new_layer = LoRALayer(m, rank, alpha, dropout)
+                setattr(module, name, new_layer)
+            else:
+                _replace(m)
+
+    _replace(model)
 
     return model
 
