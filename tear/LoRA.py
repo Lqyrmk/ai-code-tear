@@ -115,7 +115,7 @@ def get_trainable_parameters(model: nn.Module):
         if p.requires_grad:
             trainable += p.numel()
 
-    print(f"Total: {all_params:,} | Trainable: {trainable:,} | Ratio: {trainable/all_params:.4%}")
+    print(f"\nTotal: {all_params:,} | Trainable: {trainable:,} | Ratio: {trainable/all_params:.4%}")
     return trainable, all_params
 
 
@@ -163,9 +163,12 @@ class SimpleModel(nn.Module):
         v = self.v_proj(x)
         return self.fc2(q + v)
 
-def show_modules(model: nn.Module):
-    for name, m in model.named_modules():
-        print(f"{name:20} {type(m).__name__}")
+def show_lora(model):
+    for name, module in model.named_modules():
+        if isinstance(module, LoRALayer):
+            # show lora params
+            lora_A, lora_B = model.q_proj.get_lora_params()
+            print(f"{name} | A: {lora_A.shape} | B: {lora_B.shape} | merged: {module.merged}")
 
 if __name__ == "__main__":
 
@@ -188,6 +191,8 @@ if __name__ == "__main__":
     # q_proj / v_proj 变为 LoRALayer
     for name, param in model.named_parameters():
         print(f"{name:20} | requires_grad: {param.requires_grad} | shape: {param.shape}")
+
+    get_trainable_parameters(model)
 
     trainable_params = [p for p in model.parameters() if p.requires_grad]
     optimizer = torch.optim.AdamW(params=trainable_params, lr=lr)
@@ -215,3 +220,27 @@ if __name__ == "__main__":
                 status = "trainable"
                 grad_info = f"grad_mean={param.grad.mean().item():+.6f}"
             print(f"{name:35} | {status:9} | {grad_info}")
+
+    print("=" * 100)
+
+    # test merge
+    model.eval()
+
+    test_x = torch.randn(2, 128)
+
+    print("## Merged Model")
+    model = merge_lora(model)
+    show_lora(model)
+    test_merged_out = model(x)
+    # print(f"Merged Result: {test_merged_out}")
+
+    print("=" * 100)
+
+    print("## Unmerged Model")
+    model = unmerge_lora(model)
+    show_lora(model)
+    test_unmerged_out = model(x)
+    # print(f"Unmerged Result: {test_unmerged_out}")
+
+    is_close = torch.allclose(test_merged_out, test_unmerged_out, atol=1e-5, rtol=1e-4)
+    print(f"\nMerged output is equals to unmerged output: {is_close}")
