@@ -168,7 +168,7 @@ def show_lora(model):
         if isinstance(module, LoRALayer):
             # show lora params
             lora_A, lora_B = model.q_proj.get_lora_params()
-            print(f"{name} | A: {lora_A.shape} | B: {lora_B.shape} | merged: {module.merged}")
+            print(f"{name} | A: {lora_A.shape} | B: {lora_B.shape} | merged: \033[1m\033[36m{module.merged}\033[0m")
 
 if __name__ == "__main__":
 
@@ -243,4 +243,4 @@ if __name__ == "__main__":
     # print(f"Unmerged Result: {test_unmerged_out}")
 
     is_close = torch.allclose(test_merged_out, test_unmerged_out, atol=1e-5, rtol=1e-4)
-    print(f"\nMerged output is equals to unmerged output: {is_close}")
+    print(f"\nMerged output is equals to unmerged output: \033[1m\033[32m{is_close}\033[0m")
