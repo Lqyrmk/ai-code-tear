@@ -55,7 +55,7 @@ def solve(X_train, X_val_norm, X_val_anom, X_test, gamma_list, nu_list):
 
     y_train = np.zeros(X_train.shape[0])
 
-    X_val = np.vstack([X_val_norm, X_val_anom], axis=0)
+    X_val = np.concatenate([X_val_norm, X_val_anom], axis=0)
     y_val_norm = np.zeros(X_val_norm.shape[0])
     y_val_anom = np.ones(X_val_anom.shape[0])
     y_val = np.concatenate([y_val_norm, y_val_anom], axis=0)
