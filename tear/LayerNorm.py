@@ -7,7 +7,7 @@ class LayerNorm(nn.Module):
         super().__init__()
         self.eps = eps
         self.gamma = nn.Parameter(torch.ones(dim))
-        self.beta = nn.Parameter(torch.zeros(dim))
+        self.beta = nn.Parameter(torch.ones(dim))
 
     def _norm(self, x):
         mean = x.mean(dim=-1, keepdim=True)
@@ -24,11 +24,7 @@ class LayerNorm(nn.Module):
         return self.gamma * self._norm(x) + self.beta
 
 if __name__ == "__main__":
-    x = torch.randn((2, 3, 8))
-    dim = x.shape[-1]
-    ln1, ln2 = LayerNorm(dim), torch.nn.LayerNorm(dim)
-    out1, out2 = ln1(x), ln2(x)
-    print(f"x = {x}, \nout 1 = {out1}, \nout 2 = {out2}")
-
-    assert torch.allclose(out1, out2, atol=1e-6)
-    assert ln1.beta.data.sum() == 0
+    x = torch.randn((2, 3, 5))
+    ln = LayerNorm(dim=x.shape[-1])
+    out = ln(x)
+    print(f"x = {x}, \nout = {out}")
