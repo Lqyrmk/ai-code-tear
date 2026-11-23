@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import math
 
 
 class MultiHeadAttention(nn.Module):
@@ -27,7 +28,8 @@ class MultiHeadAttention(nn.Module):
         K = self.W_k(xk).view(B, -1, self.n_heads, self.head_dim).transpose(1, 2)
         V = self.W_v(xv).view(B, -1, self.n_heads, self.head_dim).transpose(1, 2)
 
-        attn_scores = (Q @ K.transpose(-2, -1)) / torch.sqrt(torch.tensor(self.d_model, dtype=torch.float32))
+        # 论文按 1 / sqrt(d_k) 缩放，d_k = head_dim = d_model // n_heads
+        attn_scores = (Q @ K.transpose(-2, -1)) / math.sqrt(self.head_dim)
 
         if mask is not None:
             attn_scores = attn_scores.masked_fill(mask, -1e9)
@@ -145,7 +147,7 @@ class Encoder(nn.Module):
         self.layers = nn.ModuleList([EncoderLayer(d_model, n_heads, d_ff, dropout) for _ in range(n_layers)])
 
     def forward(self, x, mask=None):
-        x = self.embedding(x) * torch.sqrt(torch.tensor(self.d_model, dtype=torch.float32))
+        x = self.embedding(x) * math.sqrt(self.d_model)
         x = self.pe(x)
         for layer in self.layers:
             x = layer(x, mask)
@@ -162,7 +164,7 @@ class Decoder(nn.Module):
         self.layers = nn.ModuleList([DecoderLayer(d_model, n_heads, d_ff, dropout) for _ in range(n_layers)])
 
     def forward(self, x, enc_out, enc_mask=None, dec_mask=None):
-        x = self.embedding(x) * torch.sqrt(torch.tensor(self.d_model, dtype=torch.float32))
+        x = self.embedding(x) * math.sqrt(self.d_model)
         x = self.pe(x)
         for layer in self.layers:
             x = layer(x, enc_out, enc_mask, dec_mask)
